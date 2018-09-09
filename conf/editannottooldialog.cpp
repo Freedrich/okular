@@ -1,12 +1,3 @@
-/***************************************************************************
- *   Copyright (C) 2012 by Fabio D'Urso <fabiodurso@hotmail.it>            *
- *   Copyright (C) 2015 by Laurent Montel <montel@kde.org>                 *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- ***************************************************************************/
 
 #include "editannottooldialog.h"
 
@@ -24,10 +15,12 @@
 #include <QListWidgetItem>
 #include <QPushButton>
 #include <QStackedWidget>
-#include <QDomDocument>
-#include <QDomElement>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
 #include <KConfigGroup>
 #include <QDialogButtonBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 #include "core/annotations.h"
 #include "ui/annotationwidgets.h"
@@ -131,7 +124,7 @@ QDomDocument EditAnnotToolDialog::toolXml() const
     toolElement.appendChild( engineElement );
     engineElement.appendChild( annotationElement );
 
-    const QString color = m_stubann->style().color().name( QColor::HexArgb );
+    const QString color = m_stubann->style().color().name();
     const QString opacity = QString::number( m_stubann->style().opacity() );
     const QString width = QString::number( m_stubann->style().width() );
 
@@ -229,6 +222,7 @@ QDomDocument EditAnnotToolDialog::toolXml() const
         engineElement.setAttribute( QStringLiteral("type"), QStringLiteral("TextSelector") );
         engineElement.setAttribute( QStringLiteral("color"), color );
         annotationElement.setAttribute( QStringLiteral("color"), color );
+        annotationElement.setAttribute( QStringLiteral("subject"), m_stubann->window().summary() ); 
     }
     else if ( toolType == ToolGeometricalShape )
     {
@@ -399,6 +393,8 @@ void EditAnnotToolDialog::loadTool( const QDomElement &toolElement )
         setToolType( ToolTextMarkup );
         Okular::HighlightAnnotation * ha = static_cast<Okular::HighlightAnnotation*>( m_stubann );
         ha->setHighlightType( Okular::HighlightAnnotation::Highlight );
+        if ( annotationElement.hasAttribute( QStringLiteral("subject") ) )
+            ha->window().setSummary( annotationElement.attribute( QStringLiteral("subject") ) );
     }
     else if ( annotType == QLatin1String("ink") )
     {
