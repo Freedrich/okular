@@ -10,7 +10,7 @@
 #include "pageviewannotator.h"
 
 // qt / kde includes
-#include <qloggingcategory.h>
+#include <QtCore/qloggingcategory.h>
 #include <qapplication.h>
 #include <qfile.h>
 #include <qcolor.h>
@@ -24,7 +24,7 @@
 #include <KLocalizedString>
 
 #include <kuser.h>
-#include <QDebug>
+#include <QtCore/QDebug>
 #include <qmenu.h>
 
 // system includes
@@ -633,6 +633,8 @@ class TextSelectorEngine : public AnnotatorEngine
                 m_annotElement.attribute( QStringLiteral("color") ) : m_engineColor );
             if ( m_annotElement.hasAttribute( QStringLiteral("opacity") ) )
                 ann->style().setOpacity( m_annotElement.attribute( QStringLiteral("opacity"), QStringLiteral("1.0") ).toDouble() );
+            if ( m_annotElement.hasAttribute( QStringLiteral("subject") ) )
+                ann->window().setSummary( m_annotElement.attribute( QStringLiteral("subject") ) );
 
             // return annotations
             return QList< Okular::Annotation* >() << ann;
@@ -1182,7 +1184,7 @@ QPixmap PageViewAnnotator::makeToolPixmap( const QDomElement &toolElement )
     }
     else if ( annotType == QLatin1String("note-linked") )
     {
-        QImage overlay( QStandardPaths::locate(QStandardPaths::GenericDataLocation, QString("okular/pics/tool-note-okular-colorizable" + imageVariant + ".png") ) );
+        QImage overlay( QStandardPaths::locate(QStandardPaths::GenericDataLocation, QString("okular/pics/tool-note-okular-colorizable.png" + imageVariant + ".png") ) );
         GuiUtils::colorizeImage( overlay, engineColor );
         p.drawImage( QPoint(0,0), overlay );
     }

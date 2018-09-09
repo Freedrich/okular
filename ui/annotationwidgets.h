@@ -23,6 +23,7 @@ class KColorButton;
 class QSpinBox;
 class KFontRequester;
 class AnnotationWidget;
+class KLineEdit;
 
 class PixmapPreviewSelector
   : public QWidget
@@ -72,7 +73,7 @@ class AnnotationWidget
     Q_OBJECT
 
 public:
-    explicit AnnotationWidget( Okular::Annotation * ann );
+    AnnotationWidget( Okular::Annotation * ann );
     virtual ~AnnotationWidget();
 
     virtual Okular::Annotation::SubType annotationType() const;
@@ -176,6 +177,7 @@ protected:
 private:
     Okular::HighlightAnnotation * m_hlAnn;
     QComboBox * m_typeCombo;
+    KLineEdit * m_subjEdit;
 };
 
 class GeomAnnotationWidget

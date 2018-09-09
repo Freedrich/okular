@@ -25,6 +25,7 @@
 #include <QDebug>
 #include <QMimeDatabase>
 #include <KFormat>
+#include <klineedit.h>
 
 #include "core/document.h"
 #include "guiutils.h"
@@ -548,7 +549,15 @@ QWidget * HighlightAnnotationWidget::createStyleWidget()
     m_typeCombo = new KComboBox( widget );
     tmplabel->setBuddy( m_typeCombo );
     typelay->addWidget( m_typeCombo );
-
+    
+    QHBoxLayout * subjlay = new QHBoxLayout();
+    lay->addLayout( subjlay );
+    tmplabel = new QLabel( i18n( "Subject:" ), widget );
+    subjlay->addWidget( tmplabel, 0, Qt::AlignRight );
+    m_subjEdit = new KLineEdit( m_hlAnn->window().summary(), widget );
+    tmplabel->setBuddy( m_subjEdit );
+    subjlay->addWidget( m_subjEdit );
+ 
     m_typeCombo->addItem( i18n( "Highlight" ) );
     m_typeCombo->addItem( i18n( "Squiggle" ) );
     m_typeCombo->addItem( i18n( "Underline" ) );
@@ -556,6 +565,7 @@ QWidget * HighlightAnnotationWidget::createStyleWidget()
     m_typeCombo->setCurrentIndex( m_hlAnn->highlightType() );
 
     connect( m_typeCombo, SIGNAL(currentIndexChanged(int)), this, SIGNAL(dataChanged()) );
+    connect( m_subjEdit, &KLineEdit::textChanged, this, &AnnotationWidget::dataChanged );
 
     return widget;
 }
@@ -564,6 +574,7 @@ void HighlightAnnotationWidget::applyChanges()
 {
     AnnotationWidget::applyChanges();
     m_hlAnn->setHighlightType( (Okular::HighlightAnnotation::HighlightType)m_typeCombo->currentIndex() );
+    m_hlAnn->window().setSummary( m_subjEdit->text() );
 }
 
 
